@@ -11,8 +11,8 @@ namespace FileListLibrary
     public class FileListClass
     {
         Encoding SJIS = Encoding.GetEncoding("Shift_JIS");
-        public string workfolder { get; set; }
-        public string setfoldername { get; set; } //textBox1.Tex
+        public string workfolder { get; set; }    //コピー先のフォルダ名
+        public string setfoldername { get; set; } //指定されたフォルダ名
         public string excludefilename { get; set; }
         public string selectfilename { get; set; }
         public string beforeFolder { get; set; }
@@ -21,25 +21,19 @@ namespace FileListLibrary
         /// <summary>
         /// フルパスから最後のフォルダ名を取得
         /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
+        /// <param name="path">フルパス名</param>
+        /// <returns>フルパスの最後のフォルダー名</returns>
         public string GetLastFolderName(string path)
         {
             string lastFolder = null;
-            try
+            if(!String.IsNullOrWhiteSpace(path))
             {
                 string[] folders = path.Split('\\');
-                if (folders.Length > 0)
-                    lastFolder = folders[folders.Length - 1];
-                else
-                    lastFolder = null;
-            }
-            catch (Exception)
-            {
-                throw;
+                lastFolder = folders.Length > 0 ? folders[folders.Length - 1] : null;
             }
             return lastFolder;
         }
+        
         /// <summary>
         /// 引数のListから比較対象外のファイルを削除する
         /// 設定ファイル exclude.txt
@@ -101,6 +95,7 @@ namespace FileListLibrary
 
         /// <summary>
         /// ファイル一覧list(FileSetDatas)を作成
+        /// setfoldername 指定されたフォルダ名
         /// 比較対象外のファイルを削除する
         /// 指定されたフォルダの一覧を作成して
         /// 不要なフォルダ名を消してFileSetDatasを作成する
@@ -121,7 +116,6 @@ namespace FileListLibrary
             }
             return filesetdatas;
         }
-
 
         /// <summary>
         /// コピー先のフォルダを作成してからファイルをコピーする
