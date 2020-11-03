@@ -38,7 +38,7 @@ namespace FileListLibrary
         /// 引数のListから比較対象外のファイルを削除する
         /// 設定ファイル exclude.txt
         /// </summary>
-        public List<string> GetReadyList(List<String> folderlist)
+        public List<string> GetReadyList(string wfolder,  List<String> folderlist)
         {
             if (!(folderlist?.Count > 0))
             {
@@ -47,7 +47,7 @@ namespace FileListLibrary
             List<string> extension = new List<string>();//管理しない拡張子
             List<string> unnecessary = new List<string>();//管理しないファイル
 
-            string FileName = Path.Combine(workfolder, excludefilename);//除外設定ファイル
+            string FileName = Path.Combine(wfolder, excludefilename);//除外設定ファイル
             if (File.Exists(FileName))
             {
                 IEnumerable<string> lines = File.ReadLines(FileName, SJIS);
@@ -103,8 +103,7 @@ namespace FileListLibrary
         public List<FileSetdata.FileSetdata> ListOfFiles()
         {
             List<FileSetdata.FileSetdata> filesetdatas = new List<FileSetdata.FileSetdata>();
-
-            foreach (var sdat in GetReadyList(
+            foreach (var sdat in GetReadyList(workfolder,
                 Directory.EnumerateFiles(setfoldername, "*.*", SearchOption.AllDirectories).ToList())
                 .Select(c => c.Substring(setfoldername.Length)))
             {
@@ -126,10 +125,8 @@ namespace FileListLibrary
         public void FolderCopy(List<FileSetdata.FileSetdata> copyfilelist, string dest_str, Boolean before)
         {
             string LastFolderName = GetLastFolderName(setfoldername);
-            //string CopyfolderName = before ? beforeFolder : afterFolder;
             string Cdest_str = dest_str + (before ? beforeFolder : afterFolder);
             Directory.CreateDirectory(Cdest_str);
-
             foreach (var sdata in copyfilelist)
             {
                 Directory.CreateDirectory(Cdest_str + @"\" + LastFolderName + sdata.FolderName);
