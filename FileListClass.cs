@@ -71,22 +71,22 @@ namespace FileListLibrary
                 folderlist.RemoveAll(c => Path.GetExtension(c).ToLower() == sdat.Substring(1).TrimEnd().ToLower());
             }
 
-            foreach (var sdat in unnecessary) //管理しないファイルを削除する
+            foreach (var tdat in unnecessary) //管理しないファイルを削除する
             {
-                folderlist.RemoveAll(c => Path.GetFileName(c).ToLower() == sdat.ToLower());
+                folderlist.RemoveAll(c => Path.GetFileName(c).ToLower() == tdat.ToLower());
             }
             folderlist.RemoveAll(c => c.IndexOf("workarea", StringComparison.OrdinalIgnoreCase) >= 0);
             return folderlist;
         }
 
         /// <summary>
-        /// ファイルコピー
+        /// 実行フォルダに有るファイルをWorkフォルダへコピーする
         /// </summary>
         /// <param name="folder"></param>コピー先フォルダ名
         /// <param name="fname"></param>コピー元ファイル名
         public void fileCopy(string folder, string fname)
         {
-            string fromfname = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), fname);//実行ファイルと同じフォルダ
+            string fromfname = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), fname);//実行フォルダ
             if (Directory.Exists(folder) & File.Exists(fromfname))
             {
                 File.Copy(fromfname, Path.Combine(folder, fname), true);
@@ -117,21 +117,21 @@ namespace FileListLibrary
         }
 
         /// <summary>
-        /// コピー先のフォルダを作成してからファイルをコピーする
+        /// copyfile内のファイルをコピー先のフォルダにコピーする
         /// </summary>
         /// <param name="copyfilelist"></param>コピー対象List
-        /// <param name="dest_str"></param>コピー先フォルダ
-        /// <param name="Before"></param>作業前
-        public void FolderCopy(List<FileSetdata.FileSetdata> copyfilelist, string dest_str, Boolean before)
+        /// <param name="foldername"></param>コピー先フォルダ名
+        /// <param name="Before"></param>作業前・作業後の判断
+        public void FolderCopy(List<FileSetdata.FileSetdata> copyfilelist, string foldername, Boolean before)
         {
-            string LastFolderName = GetLastFolderName(setfoldername);
-            string Cdest_str = dest_str + (before ? beforeFolder : afterFolder);
-            Directory.CreateDirectory(Cdest_str);
+            string lastfoldername = GetLastFolderName(setfoldername);
+            string workfoldernamer = foldername + (before ? beforeFolder : afterFolder);
+            Directory.CreateDirectory(workfoldernamer);
             foreach (var sdata in copyfilelist)
             {
-                Directory.CreateDirectory(Cdest_str + @"\" + LastFolderName + sdata.FolderName);
+                Directory.CreateDirectory(workfoldernamer + @"\" + lastfoldername + sdata.FolderName);
                 string fromfname = setfoldername + Path.Combine(sdata.FolderName, sdata.FileName);
-                string tofname = Cdest_str + LastFolderName + Path.Combine(sdata.FolderName, sdata.FileName);
+                string tofname = workfoldernamer + lastfoldername + Path.Combine(sdata.FolderName, sdata.FileName);
                 if (File.Exists(fromfname))
                 {
                     File.Copy(fromfname, tofname, true);
@@ -143,8 +143,7 @@ namespace FileListLibrary
         /// filesetdatsとselectfileのファイルを比較して同一のものをコピー対象List(copyfilelist)を作成
         /// </summary>
         /// <param name="filesetdatas"></param>ファイル一覧List
-        /// <param name="before"></param>作業前
-        public List<FileSetdata.FileSetdata> CopyFileListCreate(List<FileSetdata.FileSetdata> filesetdatas, Boolean before)
+        public List<FileSetdata.FileSetdata> CopyFileListCreate(List<FileSetdata.FileSetdata> filesetdatas)
         {
             var copyfilelist = new List<FileSetdata.FileSetdata>();//コピー対象ファイル
 
