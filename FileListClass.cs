@@ -82,14 +82,14 @@ namespace FileListLibrary
         /// <summary>
         /// 実行フォルダに有るファイルをWorkフォルダへコピーする
         /// </summary>
-        /// <param name="folder"></param>コピー先フォルダ名
+        /// <param name="wfolder"></param>コピー先フォルダ名
         /// <param name="fname"></param>コピー元ファイル名
-        public void fileCopy(string folder, string fname)
+        public void fileCopy(string wfolder, string fname)
         {
             string fromfname = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), fname);//実行フォルダ
-            if (Directory.Exists(folder) & File.Exists(fromfname))
+            if (Directory.Exists(wfolder) & File.Exists(fromfname))
             {
-                File.Copy(fromfname, Path.Combine(folder, fname), true);
+                File.Copy(fromfname, Path.Combine(wfolder, fname), true);
             }
         }
 
@@ -120,12 +120,12 @@ namespace FileListLibrary
         /// copyfile内のファイルをコピー先のフォルダにコピーする
         /// </summary>
         /// <param name="copyfilelist"></param>コピー対象List
-        /// <param name="foldername"></param>コピー先フォルダ名
+        /// <param name="wfolder"></param>コピー先フォルダ名
         /// <param name="Before"></param>作業前・作業後の判断
-        public void FolderCopy(List<FileSetdata.FileSetdata> copyfilelist, string foldername, Boolean before)
+        public void FolderCopy(List<FileSetdata.FileSetdata> copyfilelist, string wfolder, Boolean before)
         {
             string lastfoldername = GetLastFolderName(setfoldername);
-            string workfoldernamer = foldername + (before ? beforeFolder : afterFolder);
+            string workfoldernamer = wfolder + (before ? beforeFolder : afterFolder);
             Directory.CreateDirectory(workfoldernamer);
             foreach (var sdata in copyfilelist)
             {
@@ -142,8 +142,9 @@ namespace FileListLibrary
         /// <summary>
         /// filesetdatsとselectfileのファイルを比較して同一のものをコピー対象List(copyfilelist)を作成
         /// </summary>
-        /// <param name="filesetdatas"></param>ファイル一覧List
-        public List<FileSetdata.FileSetdata> CopyFileListCreate(List<FileSetdata.FileSetdata> filesetdatas)
+        /// <param name="wfoldr"></param> WorkFolder
+        /// /// <param name="filesetdatas"></param>ファイル一覧List
+        public List<FileSetdata.FileSetdata> CopyFileListCreate(string wfolder, List<FileSetdata.FileSetdata> filesetdatas)
         {
             var copyfilelist = new List<FileSetdata.FileSetdata>();//コピー対象ファイル
 
@@ -152,7 +153,7 @@ namespace FileListLibrary
                 return copyfilelist; ;
             }
 
-            foreach (var selectdata in File.ReadLines(Path.Combine(workfolder, selectfilename), SJIS))
+            foreach (var selectdata in File.ReadLines(Path.Combine(wfolder, selectfilename), SJIS))
             {
                 foreach (var sdata in filesetdatas.Where(c => Path.Combine(c.FolderName, c.FileName).Substring(1) == selectdata))
                 {
