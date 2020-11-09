@@ -148,7 +148,7 @@ namespace FileListLibrary
         {
             var copyfilelist = new List<FileSetdata.FileSetdata>();//コピー対象ファイル
 
-            if (!File.Exists(Path.Combine(workfolder, selectfilename)) || (String.IsNullOrWhiteSpace(setfoldername)))
+            if (!File.Exists(Path.Combine(workfolder, selectfilename)))
             {
                 return copyfilelist; ;
             }
