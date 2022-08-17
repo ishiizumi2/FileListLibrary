@@ -38,7 +38,7 @@ namespace FileListLibrary
         /// 引数のListから比較対象外のファイルを削除する
         /// 設定ファイル exclude.txt
         /// <param name="WorkFolder">ワーク用フォルダ</param>
-        /// <param name="folderlist"/>指定されたフォルダ内のファイル一覧List</param>
+        /// <param name="folderlist"/>指定されたフォルダのファイル一覧List</param>
         /// </summary>
         public List<string> GetReadyList(string WorkFolder,  List<String> folderlist)
         {
@@ -68,16 +68,16 @@ namespace FileListLibrary
                 return folderlist;
             }
 
-            foreach (var sdat in extension) //指定された拡張子のファイルを削除する
+            foreach (var sdat in extension) //管理しない拡張子のファイルを削除する
             {
                 folderlist.RemoveAll(c => Path.GetExtension(c).ToLower() == sdat.Substring(1).TrimEnd().ToLower());
             }
 
-            foreach (var tdat in unnecessary) //管理しないファイルを削除する
+            foreach (var sdat in unnecessary) //管理しないファイルを削除する
             {
-                folderlist.RemoveAll(c => Path.GetFileName(c).ToLower() == tdat.ToLower());
+                folderlist.RemoveAll(c => Path.GetFileName(c).ToLower() == sdat.ToLower());
             }
-            folderlist.RemoveAll(c => c.IndexOf("workarea", StringComparison.OrdinalIgnoreCase) >= 0);
+            folderlist.RemoveAll(c => c.IndexOf("workarea", StringComparison.OrdinalIgnoreCase) >= 0);//WorkAreaフォルダ削除
             return folderlist;
         }
 
