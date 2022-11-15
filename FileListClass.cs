@@ -46,28 +46,26 @@ namespace FileListLibrary
             {
                 return folderlist; //空なら抜ける
             }
-            List<string> extension = new List<string>();//管理しない拡張子
-            List<string> unnecessary = new List<string>();//管理しないファイル
-
+ 
             string FileName = Path.Combine(WorkFolder, excludefilename);//除外設定ファイル
-            if (File.Exists(FileName))
-            {
-                IEnumerable<string> lines = File.ReadLines(FileName, SJIS);
-                foreach (var line in lines.Where(c => c.Length > 2).Where(c => c.Substring(0, 2) == "*."))
-                {
-                    extension.Add(line);
-                }
-
-                foreach (var line in lines.Where(c => c.Length > 2).Where(c => c.Substring(0, 2) == "$$"))
-                {
-                    unnecessary.Add(line.Substring(2));
-                }
-            }
-            else
+            if (!File.Exists(FileName))
             {
                 return folderlist;
             }
-
+            
+            IEnumerable<string> lines = File.ReadLines(FileName, SJIS);
+            List<string> extension = new List<string>();//管理しない拡張子
+            
+            foreach (var line in lines.Where(c => c.Length > 2).Where(c => c.Substring(0, 2) == "*."))
+            {
+                extension.Add(line);
+            }
+            List<string> unnecessary = new List<string>();//管理しないファイル
+            foreach (var line in lines.Where(c => c.Length > 2).Where(c => c.Substring(0, 2) == "$$"))
+            {
+                unnecessary.Add(line.Substring(2));
+            }
+           
             foreach (var sdat in extension) //管理しない拡張子のファイルを削除する
             {
                 folderlist.RemoveAll(c => Path.GetExtension(c).ToLower() == sdat.Substring(1).TrimEnd().ToLower());
